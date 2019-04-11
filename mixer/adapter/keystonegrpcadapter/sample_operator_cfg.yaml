@@ -1,0 +1,47 @@
+# Handler for adapter keystonegrpcadapter
+apiVersion: "config.istio.io/v1alpha2"
+kind: handler
+metadata:
+ name: keystone-logentry-handler
+ namespace: istio-system
+spec:
+ adapter: keystonegrpcadapter
+ connection:
+   address: "{ADDRESS}" #replaces at runtime by the test
+ params:
+   apiKey: "6263760d-5755-4f4d-8fbc-73951448c889"
+---
+
+# instance for template logEntry
+apiVersion: "config.istio.io/v1alpha2"
+kind: instance
+metadata:
+ name: keystone-logentry-instance
+ namespace: istio-system
+spec:
+ template: logentry
+ params:
+  severity: '"warning"'
+  timestamp: request.time
+  variables:
+    source: source.labels["app"] | source.workload.name | "unknown"
+    user: source.user | "unknown"
+    destination: destination.labels["app"] | destination.workload.name | "unknown"
+    responseCode: response.code | 0
+    responseSize: response.size | 0
+    latency: response.duration | "0ms"
+  monitored_resource_type: '"UNSPECIFIED"'
+---
+
+# rule to dispatch to handler h1
+apiVersion: "config.istio.io/v1alpha2"
+kind: rule
+metadata:
+ name: keystonelogentry-rule1
+ namespace: istio-system
+spec:
+ actions:
+ - handler: keystone-logentry-handler.istio-system
+   instances:
+   - keystone-logentry-instance
+---
