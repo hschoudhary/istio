@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+// config for keystonegrpcadapter
+package adapter.keystonegrpcadapter.config;
+
+import "gogoproto/gogo.proto";
+
+option go_package="config";
+
+// config for keystonegrpcadapter
+message Params {
+    // Apikey to send data to keystone via a API Key information about runtime requests.
+    string apiKey = 1;
+    int64 httpRequestTimeout = 2;
+    int64 bufferSize = 3;
+    int64 sampleRate = 4;
+}
