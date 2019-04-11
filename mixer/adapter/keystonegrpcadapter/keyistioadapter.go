@@ -59,7 +59,7 @@ func (s *KeystoneGrpcAdapter) HandleLogEntry(ctx context.Context, r *logentry.Ha
 		log.Errorf("Could not transform any data, error=%v", err)
 		return nil, err
 	}
-	if err := s.sendToKeystone(data, cfg.ApiKey); err != nil {
+	if err := s.sendToKeystone(data, cfg); err != nil {
 		log.Errorf("Failed to send data to keystone, error=%v", err)
 		return nil, err
 	}
@@ -113,7 +113,7 @@ func (s *KeystoneGrpcAdapter) sendToKeystone(data []byte, cfg *config.Params) er
 	// TODO - Add config request time out here
 	client.Timeout = time.Duration(10*time.Second)
 	// TODO - Add actions and error details
-	resp, err := client.Post(fmt.Sprintf("https://%s.api.keystone.splunkbeta.com/1.0/%s/%s/0/1", cfg.ApiKey, cfg.ApiKey, uuid.NewUUID().String()),
+	resp, err := client.Post(fmt.Sprintf("https://%s.api.keystone.playground.splunkbeta.com/1.0/%s/%s/0/1", cfg.ApiKey, cfg.ApiKey, uuid.NewUUID().String()),
 		"application/json", bytes.NewReader(data))
 	if err != nil {
 		log.Errora(err)

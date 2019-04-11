@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	addr := ":9090"
+	addr := "9090"
 	//if len(os.Args) > 1 {
 	//	addr = os.Args[1]
 	//}
