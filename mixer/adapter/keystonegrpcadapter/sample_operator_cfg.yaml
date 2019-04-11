@@ -7,7 +7,7 @@ metadata:
 spec:
  adapter: keystonegrpcadapter
  connection:
-   address: "{ADDRESS}" #replaces at runtime by the test
+   address: ":9090"
  params:
    apiKey: "6263760d-5755-4f4d-8fbc-73951448c889"
 ---

@@ -9,10 +9,10 @@ import (
 )
 
 func main() {
-	addr := ""
-	if len(os.Args) > 1 {
-		addr = os.Args[1]
-	}
+	addr := ":9090"
+	//if len(os.Args) > 1 {
+	//	addr = os.Args[1]
+	//}
 
 	s, err := mygrpcadapter.NewKeystoneGrpcAdapter(addr)
 	if err != nil {
@@ -25,5 +25,5 @@ func main() {
 		s.Run(shutdown)
 	}()
 	msg := <-shutdown
-	log.Infof("Shuting down with message=%v", msg)
+	log.Infof("Shutting down with message=%v", msg)
 }
