@@ -4,17 +4,17 @@ import (
 	"fmt"
 	"os"
 
-	mygrpcadapter "istio.io/istio/mixer/adapter/keystonegrpcadapter"
+	keystonegrpcadapter "istio.io/istio/mixer/adapter/keystonegrpcadapter"
 	"istio.io/istio/pkg/log"
 )
 
 func main() {
 	addr := "9090"
-	//if len(os.Args) > 1 {
-	//	addr = os.Args[1]
-	//}
+	if len(os.Args) > 1 {
+		addr = os.Args[1]
+	}
 
-	s, err := mygrpcadapter.NewKeystoneGrpcAdapter(addr)
+	s, err := keystonegrpcadapter.NewKeystoneGrpcAdapter(addr)
 	if err != nil {
 		fmt.Printf("unable to start server: %v", err)
 		os.Exit(-1)

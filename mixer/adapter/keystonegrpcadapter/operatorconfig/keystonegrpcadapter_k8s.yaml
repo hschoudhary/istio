@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: istio-keystone
+  namespace: istio-system
+  labels:
+    app: istio-keystone
+spec:
+  type: ClusterIP
+  ports:
+  - name: grpc
+    protocol: TCP
+    port: 9090
+    targetPort: 9090
+  selector:
+    app: istio-keystone
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: istio-keystone
+  namespace: istio-system
+  labels:
+    app: istio-keystone
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: istio-keystone
+      annotations:
+        sidecar.istio.io/inject: "false"
+        scheduler.alpha.kubernetes.io/critical-pod: ""
+    spec:
+      containers:
+      - name: istio-keystone
+        image: istio/istio-keystone-adapter:1.0
+        ports:
+        - containerPort: 9090

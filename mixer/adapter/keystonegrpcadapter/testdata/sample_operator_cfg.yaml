@@ -40,8 +40,9 @@ metadata:
  name: keystonelogentry-rule1
  namespace: istio-system
 spec:
- actions:
- - handler: keystone-logentry-handler.istio-system
+  match: context.protocol == "http" || context.protocol == "grpc"
+  actions:
+  - handler: keystone-logentry-handler.istio-system
    instances:
    - keystone-logentry-instance
 ---
