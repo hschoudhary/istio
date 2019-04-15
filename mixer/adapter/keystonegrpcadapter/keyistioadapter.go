@@ -7,6 +7,7 @@ package keystonegrpcadapter
 import (
 	"bytes"
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -76,17 +77,19 @@ func (s *KeystoneGrpcAdapter) transformsInstanceData(instances []*logentry.Insta
 	instanceData := make(map[string]interface{})
 	for _, instance := range instances {
 		if len(instance.Variables) > 0 {
-			instanceData["variables"] = instance.Variables
+			for key, value := range instance.Variables {
+				instanceData[key] = value
+			}
 		}
-		if len(instance.MonitoredResourceDimensions) > 0 {
-			instanceData["monitorResourceDimensions"] = instance.MonitoredResourceDimensions
-		}
+		//if len(instance.MonitoredResourceDimensions) > 0 {
+		//	instanceData["monitorResourceDimensions"] = instance.MonitoredResourceDimensions
+		//}
 		if instance.Severity != "" {
 			instanceData["severity"] = instance.Severity
 		}
-		if instance.MonitoredResourceType != "" {
-			instanceData["monitorResourceType"] = instance.MonitoredResourceType
-		}
+		//if instance.MonitoredResourceType != "" {
+		//	instanceData["monitorResourceType"] = instance.MonitoredResourceType
+		//}
 
 		// Add sourcetype and timestamp
 		instanceData["_time"] = instance.Timestamp.GetValue().GetSeconds()
@@ -107,6 +110,7 @@ func (s *KeystoneGrpcAdapter) sendToKeystone(data []byte, cfg *config.Params) er
 	if data == nil || len(data) == 0 || cfg.ApiKey == "" {
 		return errors.New(fmt.Sprintf("invalid apikey=%s, or data=%s", cfg.ApiKey, data))
 	}
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	client := http.Client{
 		Transport: http.DefaultTransport,
 	}

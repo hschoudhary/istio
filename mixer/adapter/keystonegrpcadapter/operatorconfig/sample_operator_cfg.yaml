@@ -7,21 +7,19 @@ metadata:
 spec:
  adapter: keystonegrpcadapter
  connection:
-   address: ":9090"
+   address: "keystonegrpcadapter:9090"
  params:
    apiKey: "6263760d-5755-4f4d-8fbc-73951448c889"
 ---
 
 # instance for template logEntry
 apiVersion: "config.istio.io/v1alpha2"
-kind: instance
+kind: logentry
 metadata:
  name: keystone-logentry-instance
  namespace: istio-system
 spec:
- template: logentry
- params:
-  severity: '"warning"'
+  severity: '"info"'
   timestamp: request.time
   variables:
     source: source.labels["app"] | source.workload.name | "unknown"
@@ -30,6 +28,9 @@ spec:
     responseCode: response.code | 0
     responseSize: response.size | 0
     latency: response.duration | "0ms"
+    requestUrlPath: request.path | ""
+    requestMethod: request.method | ""
+    requestHost:  source.ip | ip("0.0.0.0")
   monitored_resource_type: '"UNSPECIFIED"'
 ---
 
@@ -40,9 +41,10 @@ metadata:
  name: keystonelogentry-rule1
  namespace: istio-system
 spec:
- actions:
- - handler: keystone-logentry-handler.istio-system
-   instances:
-   - keystone-logentry-instance
+  match: context.protocol == "http" || context.protocol == "grpc"
+  actions:
+  - handler: keystone-logentry-handler.istio-system
+    instances:
+    - keystone-logentry-instance
 #match: context.protocol == "http" || context.protocol == "grpc"
 ---
